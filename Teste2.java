@@ -12,8 +12,11 @@ public class Teste2 {
 		Player player1 = new Player(Player.MOUSE);
 		Player player2 = new Player(Player.KEYBOARD);
 		Ball ball = new Ball(false);
-		PongWindow window = new PongWindow (player1,player2, ball);
+		Screen screen = new Screen();
+		PongWindow window = new PongWindow (player1,player2, ball,screen);
 		window.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
 		window.setVisible (true);
+		while(true)
+			System.out.println("bola: "+ball.getBall_x());
 	}
 }
