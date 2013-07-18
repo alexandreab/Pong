@@ -12,37 +12,31 @@ import javax.swing.Timer;
 public class PongWindow extends JFrame {
 	public PongWindow () {
 		super ();
-		
-		setTitle ("Pong");
-		setSize (640, 480);
-		
 		Player player1 = new Player(Player.CPU_HARD);
 		Player player2 = new Player(Player.KEYBOARD);
 		Ball ball = new Ball(false);
-		
-		Pong content = new Pong (player1,player2, ball);
-		content.ball.setAcceleration(true);
-		getContentPane ().add (content);
-		
-		addMouseListener (content);
-		addKeyListener (content);
-		
-		Timer timer = new Timer (20, content);
-		timer.start ();
+		configureObjects(player1, player2, ball);
 	}
+
 	public PongWindow (Player player1, Player player2, Ball ball) {
 		super ();
+		
+		configureObjects(player1, player2, ball);
+	}
+	
+	
+	private void configureObjects(Player player1, Player player2, Ball ball) {
 		setTitle ("Pong");
 		setSize (640, 480);
-		
-		Pong content = new Pong (player1, player2, ball);
+		Screen screen = new Screen();
+		Pong content = new Pong (player1, player2, ball, screen);
 		content.ball.setAcceleration(true);
-		getContentPane ().add (content);
 		
-		addMouseListener (content);
-		addKeyListener (content);
+		getContentPane().add(screen);
+		addMouseListener (screen);
+		addKeyListener (screen);
 		
-		Timer timer = new Timer (20, content);
+		Timer timer = new Timer (20, screen);
 		timer.start ();
 	}
 
