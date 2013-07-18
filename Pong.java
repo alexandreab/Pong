@@ -108,7 +108,7 @@ public class Pong extends JPanel implements ActionListener, MouseListener, KeyLi
 			}
 		}
 		// KEYBOARD
-		else if (player.getType() == Player.MOUSE) {
+		else if (player.getType() == Player.KEYBOARD) {
 			if (key_up && !key_down) {
 				movePlayer (player, player.position - SPEED);
 			}

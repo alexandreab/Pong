@@ -25,4 +25,20 @@ public class PongWindow extends JFrame {
 		Timer timer = new Timer (20, content);
 		timer.start ();
 	}
+	public PongWindow (int player1, int player2) {
+		super ();
+		setTitle ("Pong");
+		setSize (640, 480);
+		
+		Pong content = new Pong (player1, player2);
+		content.acceleration = true;
+		getContentPane ().add (content);
+		
+		addMouseListener (content);
+		addKeyListener (content);
+		
+		Timer timer = new Timer (20, content);
+		timer.start ();
+	}
+
 }
