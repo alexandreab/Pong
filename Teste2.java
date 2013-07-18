@@ -11,7 +11,8 @@ public class Teste2 {
 	public static void main (String[] args) {
 		Player player1 = new Player(Player.MOUSE);
 		Player player2 = new Player(Player.KEYBOARD);
-		PongWindow window = new PongWindow (player1,player2);
+		Ball ball = new Ball(false);
+		PongWindow window = new PongWindow (player1,player2, ball);
 		window.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
 		window.setVisible (true);
 	}

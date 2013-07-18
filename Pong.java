@@ -5,20 +5,12 @@
  *  Read the file 'COPYING' for more information
  */
 
+import java.awt.*;
+import java.awt.event.*;
+
 import javax.swing.JPanel;
-import javax.swing.JOptionPane;
-import java.awt.Color;
-import java.awt.Graphics;
 
-import java.awt.event.MouseListener;
-import java.awt.event.MouseEvent;
-
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-
-import java.awt.event.KeyListener;
-import java.awt.event.KeyEvent;
-
+@SuppressWarnings("serial")
 public class Pong extends JPanel implements ActionListener, MouseListener, KeyListener {
 	// Proprietà della palla
 	private static final int RADIUS = 10; // Raggio
@@ -37,18 +29,19 @@ public class Pong extends JPanel implements ActionListener, MouseListener, KeyLi
 	
 	private boolean new_game = true;
 	
-	public Ball ball = new Ball(false);
+	public Ball ball;
 	private boolean mouse_inside = false;
 	private boolean key_up = false;
 	private boolean key_down = false;
 	
 	// Constructor
-	public Pong (Player p1, Player p2) {
+	public Pong (Player p1, Player p2, Ball ball) {
 		super ();
 		setBackground (new Color (0, 0, 0));
 		
 		player1 = p1;
 		player2 = p2;
+		this.ball = ball;
 	}
 	
 	// Compute destination of the ball
