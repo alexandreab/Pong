@@ -19,7 +19,7 @@ public class PongWindow extends JFrame {
 		Player player2 = new Player(Player.KEYBOARD);
 		
 		Pong content = new Pong (player1,player2);
-		content.acceleration = true;
+		content.ball.setAcceleration(true);
 		getContentPane ().add (content);
 		
 		addMouseListener (content);
@@ -34,7 +34,7 @@ public class PongWindow extends JFrame {
 		setSize (640, 480);
 		
 		Pong content = new Pong (player1, player2);
-		content.acceleration = true;
+		content.ball.setAcceleration(true);
 		getContentPane ().add (content);
 		
 		addMouseListener (content);

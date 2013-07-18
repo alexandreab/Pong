@@ -37,14 +37,7 @@ public class Pong extends JPanel implements ActionListener, MouseListener, KeyLi
 	
 	private boolean new_game = true;
 	
-	private int ball_x;
-	private int ball_y;
-	private double ball_x_speed;
-	private double ball_y_speed;
-	
-	public boolean acceleration = false;
-	private int ball_acceleration_count;
-	
+	public Ball ball = new Ball(false);
 	private boolean mouse_inside = false;
 	private boolean key_up = false;
 	private boolean key_down = false;
@@ -60,10 +53,10 @@ public class Pong extends JPanel implements ActionListener, MouseListener, KeyLi
 	
 	// Compute destination of the ball
 	private void computeDestination (Player player) {
-		if (ball_x_speed > 0)
-			player.destination = ball_y + (getWidth() - PADDING - WIDTH - RADIUS - ball_x) * (int)(ball_y_speed) / (int)(ball_x_speed);
+		if (ball.getBall_x_speed() > 0)
+			player.destination = ball.getBall_y() + (getWidth() - PADDING - WIDTH - RADIUS - ball.getBall_x()) * (int)(ball.getBall_y_speed()) / (int)(ball.getBall_x_speed());
 		else
-			player.destination = ball_y - (ball_x - PADDING - WIDTH - RADIUS) * (int)(ball_y_speed) / (int)(ball_x_speed);
+			player.destination = ball.getBall_y() - (ball.getBall_x() - PADDING - WIDTH - RADIUS) * (int)(ball.getBall_y_speed()) / (int)(ball.getBall_x_speed());
 		
 		if (player.destination <= RADIUS)
 			player.destination = 2 * PADDING - player.destination;
@@ -121,7 +114,7 @@ public class Pong extends JPanel implements ActionListener, MouseListener, KeyLi
 		}
 		// CPU EASY
 		else if (player.getType() == Player.CPU_EASY) {
-			movePlayer (player, ball_y);
+			movePlayer (player, ball.getBall_y());
 		}
 	}
 	
@@ -131,14 +124,14 @@ public class Pong extends JPanel implements ActionListener, MouseListener, KeyLi
 		
 		// Prepara il campo di gioco
 		if (new_game) {
-			ball_x = getWidth () / 2;
-			ball_y = getHeight () / 2;
+			ball.setBall_x(getWidth () / 2);
+			ball.setBall_y(getHeight () / 2);
 			
 			double phase = Math.random () * Math.PI / 2 - Math.PI / 4;
-			ball_x_speed = (int)(Math.cos (phase) * START_SPEED);
-			ball_y_speed = (int)(Math.sin (phase) * START_SPEED);
+			ball.setBall_x_speed((int)(Math.cos (phase) * START_SPEED));
+			ball.setBall_y_speed((int)(Math.sin (phase) * START_SPEED));
 			
-			ball_acceleration_count = 0;
+			ball.setBall_acceleration_count(0);
 			
 			if (player1.getType() == Player.CPU_HARD || player1.getType() == Player.CPU_EASY) {
 				player1.position = getHeight () / 2;
@@ -153,38 +146,42 @@ public class Pong extends JPanel implements ActionListener, MouseListener, KeyLi
 		}
 		
 		// Calcola la posizione del primo giocatore
-		if (player1.getType() == Player.MOUSE || player1.getType() == Player.KEYBOARD || ball_x_speed < 0)
+		if (player1.getType() == Player.MOUSE || player1.getType() == Player.KEYBOARD || ball.getBall_x_speed() < 0)
 			computePosition (player1);
 		
 		// Calcola la posizione del secondo giocatore
-		if (player2.getType() == Player.MOUSE || player2.getType() == Player.KEYBOARD || ball_x_speed > 0)
+		if (player2.getType() == Player.MOUSE || player2.getType() == Player.KEYBOARD || ball.getBall_x_speed() > 0)
 			computePosition (player2);
 		
 		// Calcola la posizione della pallina
+		ball.setBall_x((int) (ball.getBall_x()+ball.getBall_x_speed()));
+		ball.setBall_y((int) (ball.getBall_y()+ball.getBall_y_speed()));
+		/*
 		ball_x += ball_x_speed;
 		ball_y += ball_y_speed;
-		if (ball_y_speed < 0) // Hack to fix double-to-int conversion
-			ball_y ++;
+		 */
+		if (ball.getBall_y_speed() < 0) // Hack to fix double-to-int conversion
+			ball.setBall_y(ball.getBall_y() + 1);
 		
 		// Accelera la pallina
-		if (acceleration) {
-			ball_acceleration_count ++;
-			if (ball_acceleration_count == ACCELERATION) {
-				ball_x_speed = ball_x_speed + (int)ball_x_speed / Math.hypot ((int)ball_x_speed, (int)ball_y_speed) * 2;
-				ball_y_speed = ball_y_speed + (int)ball_y_speed / Math.hypot ((int)ball_x_speed, (int)ball_y_speed) * 2;
-				ball_acceleration_count = 0;
+		if (ball.isAcceleration()) {
+			ball.setBall_acceleration_count(ball.getBall_acceleration_count() + 1);
+			if (ball.getBall_acceleration_count() == ACCELERATION) {
+				ball.setBall_x_speed(ball.getBall_x_speed() + (int)ball.getBall_x_speed() / Math.hypot ((int)ball.getBall_x_speed(), (int)ball.getBall_y_speed()) * 2);
+				ball.setBall_y_speed(ball.getBall_y_speed() + (int)ball.getBall_y_speed() / Math.hypot ((int)ball.getBall_x_speed(), (int)ball.getBall_y_speed()) * 2);
+				ball.setBall_acceleration_count(0);
 			}
 		}
 		
 		// Border-collision LEFT
-		if (ball_x <= PADDING + WIDTH + RADIUS) {
-			int collision_point = ball_y + (int)(ball_y_speed / ball_x_speed * (PADDING + WIDTH + RADIUS - ball_x));
+		if (ball.getBall_x() <= PADDING + WIDTH + RADIUS) {
+			int collision_point = ball.getBall_y() + (int)(ball.getBall_y_speed() / ball.getBall_x_speed() * (PADDING + WIDTH + RADIUS - ball.getBall_x()));
 			if (collision_point > player1.position - HEIGHT - TOLERANCE && 
 			    collision_point < player1.position + HEIGHT + TOLERANCE) {
-				ball_x = 2 * (PADDING + WIDTH + RADIUS) - ball_x;
-				ball_x_speed = Math.abs (ball_x_speed);
-				ball_y_speed -= Math.sin ((double)(player1.position - ball_y) / HEIGHT * Math.PI / 4)
-				                * Math.hypot (ball_x_speed, ball_y_speed);
+				ball.setBall_x(2 * (PADDING + WIDTH + RADIUS) - ball.getBall_x());
+				ball.setBall_x_speed(Math.abs (ball.getBall_x_speed()));
+				ball.setBall_y_speed(ball.getBall_y_speed() - Math.sin ((double)(player1.position - ball.getBall_y()) / HEIGHT * Math.PI / 4)
+				                * Math.hypot (ball.getBall_x_speed(), ball.getBall_y_speed()));
 				if (player2.getType() == Player.CPU_HARD)
 					computeDestination (player2);
 			}
@@ -195,14 +192,14 @@ public class Pong extends JPanel implements ActionListener, MouseListener, KeyLi
 		}
 		
 		// Border-collision RIGHT
-		if (ball_x >= getWidth() - PADDING - WIDTH - RADIUS) {
-			int collision_point = ball_y - (int)(ball_y_speed / ball_x_speed * (ball_x - getWidth() + PADDING + WIDTH + RADIUS));
+		if (ball.getBall_x() >= getWidth() - PADDING - WIDTH - RADIUS) {
+			int collision_point = ball.getBall_y() - (int)(ball.getBall_y_speed() / ball.getBall_x_speed() * (ball.getBall_x() - getWidth() + PADDING + WIDTH + RADIUS));
 			if (collision_point > player2.position - HEIGHT - TOLERANCE && 
 			    collision_point < player2.position + HEIGHT + TOLERANCE) {
-				ball_x = 2 * (getWidth() - PADDING - WIDTH - RADIUS ) - ball_x;
-				ball_x_speed = -1 * Math.abs (ball_x_speed);
-				ball_y_speed -= Math.sin ((double)(player2.position - ball_y) / HEIGHT * Math.PI / 4)
-				                * Math.hypot (ball_x_speed, ball_y_speed);
+				ball.setBall_x(2 * (getWidth() - PADDING - WIDTH - RADIUS ) - ball.getBall_x());
+				ball.setBall_x_speed(-1 * Math.abs (ball.getBall_x_speed()));
+				ball.setBall_y_speed(ball.getBall_y_speed() - Math.sin ((double)(player2.position - ball.getBall_y()) / HEIGHT * Math.PI / 4)
+				                * Math.hypot (ball.getBall_x_speed(), ball.getBall_y_speed()));
 				if (player1.getType() == Player.CPU_HARD)
 					computeDestination (player1);
 			}
@@ -213,15 +210,15 @@ public class Pong extends JPanel implements ActionListener, MouseListener, KeyLi
 		}
 		
 		// Border-collision TOP
-		if (ball_y <= RADIUS) {
-			ball_y_speed = Math.abs (ball_y_speed);
-			ball_y = 2 * RADIUS - ball_y;
+		if (ball.getBall_y() <= RADIUS) {
+			ball.setBall_y_speed(Math.abs (ball.getBall_y_speed()));
+			ball.setBall_y(2 * RADIUS - ball.getBall_y());
 		}
 		
 		// Border-collision BOTTOM
-		if (ball_y >= getHeight() - RADIUS) {
-			ball_y_speed = -1 * Math.abs (ball_y_speed);
-			ball_y = 2 * (getHeight() - RADIUS) - ball_y;
+		if (ball.getBall_y() >= getHeight() - RADIUS) {
+			ball.setBall_y_speed(-1 * Math.abs (ball.getBall_y_speed()));
+			ball.setBall_y(2 * (getHeight() - RADIUS) - ball.getBall_y());
 		}
 		
 		// Disegna i carrelli
@@ -230,7 +227,7 @@ public class Pong extends JPanel implements ActionListener, MouseListener, KeyLi
 		g.fillRect (getWidth() - PADDING - WIDTH, player2.position - HEIGHT, WIDTH, HEIGHT * 2);
 		
 		// Disegna la palla
-		g.fillOval (ball_x - RADIUS, ball_y - RADIUS, RADIUS*2, RADIUS*2);
+		g.fillOval (ball.getBall_x() - RADIUS, ball.getBall_y() - RADIUS, RADIUS*2, RADIUS*2);
 		
 		// Disegna i punti
 		g.drawString (player1.points+" ", getWidth() / 2 - 20, 20);
