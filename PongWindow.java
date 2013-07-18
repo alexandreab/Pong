@@ -29,7 +29,6 @@ public class PongWindow extends JFrame {
 	private void configureObjects(Player player1, Player player2, Ball ball, Screen screen) {
 		setTitle ("Pong");
 		setSize (640, 480);
-		
 		Pong content = new Pong (player1, player2, ball, screen);
 		content.ball.setAcceleration(true);
 		

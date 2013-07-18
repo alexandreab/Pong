@@ -16,7 +16,5 @@ public class Teste2 {
 		PongWindow window = new PongWindow (player1,player2, ball,screen);
 		window.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
 		window.setVisible (true);
-		while(true)
-			System.out.println("bola: "+ball.getBall_x());
 	}
 }
