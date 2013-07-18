@@ -40,4 +40,18 @@ public class Player {
 	public void setId(int id){
 		this.id = id;
 	}
+	public String toString(){
+		String values="";
+		values+=type+":"+position+":"+destination+":"+points+":"+id;
+		return values;
+	}
+	public void toObject(String values) {
+		String[] arrayofValues = values.split(":");
+		type = Integer.parseInt(arrayofValues[0]);
+		position = Integer.parseInt(arrayofValues[1]);
+		destination = Integer.parseInt(arrayofValues[2]);
+		points = Integer.parseInt(arrayofValues[3]);
+		id = Integer.parseInt(arrayofValues[4]);
+		
+	}
 }

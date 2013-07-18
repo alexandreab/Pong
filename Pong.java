@@ -18,7 +18,7 @@ public class Pong {
 	static final int WIDTH = 20;
 	static final int TOLERANCE = 5;
 	static final int PADDING = 10;
-	static int TYPE = 1; //Cliente
+	static int TYPE = 2; // Servidor
 
 	Player player1;
 	Player player2;
@@ -30,12 +30,13 @@ public class Pong {
 	Receptor receptor;
 
 	// Constructor
-	public Pong(Player p1, Player p2, Ball ball, Screen screen) {
+	public Pong(Player p1, Player p2, Ball ball, Screen screen, Receptor receptor) {
 		super();
 
 		player1 = p1;
 		player2 = p2;
 		this.ball = ball;
+		this.receptor = receptor;
 
 		this.screen = screen;
 		screen.game = this;
@@ -43,7 +44,7 @@ public class Pong {
 
 	// Compute destination of the ball
 	void computeDestination(Player player) {
-		if (TYPE==1) {
+		if (TYPE == 1) {
 			player.destination = receptor.getPlayerDestination(player);
 		} else {
 			if (ball.getBall_x_speed() > 0)
@@ -125,54 +126,69 @@ public class Pong {
 	}
 
 	void computeBall(Screen screen) {
-		if (TYPE==1) {
-			//ball.setBall_x(receptor.getBall_x());
-			//.setBall_y(receptor.getBall_y());
-			//.setBall_x_speed(receptor.getBall_x_speed());
-			//ball.setBall_y_speed(receptor.getBall_y_speed());
-			//ball.setAcceleration(receptor.isAcceleration());
-			//ball.setBall_acceleration_count(receptor.getBall_acceleration_count());
-		}
-		
+
 		// Prepara il campo di gioco
 		checkNewGame(screen);
-		// Calcola la posizione del primo giocatore
-		if (player1.getType() == Player.MOUSE
-				|| player1.getType() == Player.KEYBOARD
-				|| ball.getBall_x_speed() < 0)
-			computePosition(player1);
 
-		// Calcola la posizione del secondo giocatore
-		if (player2.getType() == Player.MOUSE
-				|| player2.getType() == Player.KEYBOARD
-				|| ball.getBall_x_speed() > 0)
-			computePosition(player2);
+		if (TYPE == 1) {
+			// ball.setBall_x(receptor.getBall_x());
+			// .setBall_y(receptor.getBall_y());
+			// .setBall_x_speed(receptor.getBall_x_speed());
+			// ball.setBall_y_speed(receptor.getBall_y_speed());
+			// ball.setAcceleration(receptor.isAcceleration());
+			// ball.setBall_acceleration_count(receptor.getBall_acceleration_count());
+			// Calcola la posizione del primo giocatore
+			if (player1.getType() == Player.MOUSE
+					|| player1.getType() == Player.KEYBOARD
+					|| ball.getBall_x_speed() < 0)
+				computePosition(player1);
 
-		// Calcola la posizione della pallina
-		ball.setBall_x((int) (ball.getBall_x() + ball.getBall_x_speed()));
-		ball.setBall_y((int) (ball.getBall_y() + ball.getBall_y_speed()));
-		/*
-		 * ball_x += ball_x_speed; ball_y += ball_y_speed;
-		 */
-		if (ball.getBall_y_speed() < 0) // Hack to fix double-to-int conversion
-			ball.setBall_y(ball.getBall_y() + 1);
+			// Calcola la posizione del secondo giocatore
+			if (player2.getType() == Player.MOUSE
+					|| player2.getType() == Player.KEYBOARD
+					|| ball.getBall_x_speed() > 0)
+				computePosition(player2);
+		} else {
 
-		// Accelera la pallina
-		if (ball.isAcceleration()) {
-			ball.setBall_acceleration_count(ball.getBall_acceleration_count() + 1);
-			if (ball.getBall_acceleration_count() == Pong.ACCELERATION) {
-				ball.setBall_x_speed(ball.getBall_x_speed()
-						+ (int) ball.getBall_x_speed()
-						/ Math.hypot((int) ball.getBall_x_speed(),
-								(int) ball.getBall_y_speed()) * 2);
-				ball.setBall_y_speed(ball.getBall_y_speed()
-						+ (int) ball.getBall_y_speed()
-						/ Math.hypot((int) ball.getBall_x_speed(),
-								(int) ball.getBall_y_speed()) * 2);
-				ball.setBall_acceleration_count(0);
+			// Calcola la posizione del primo giocatore
+			if (player1.getType() == Player.MOUSE
+					|| player1.getType() == Player.KEYBOARD
+					|| ball.getBall_x_speed() < 0)
+				computePosition(player1);
+
+			// Calcola la posizione del secondo giocatore
+			if (player2.getType() == Player.MOUSE
+					|| player2.getType() == Player.KEYBOARD
+					|| ball.getBall_x_speed() > 0)
+				computePosition(player2);
+
+			// Calcola la posizione della pallina
+			ball.setBall_x((int) (ball.getBall_x() + ball.getBall_x_speed()));
+			ball.setBall_y((int) (ball.getBall_y() + ball.getBall_y_speed()));
+			/*
+			 * ball_x += ball_x_speed; ball_y += ball_y_speed;
+			 */
+			if (ball.getBall_y_speed() < 0) // Hack to fix double-to-int
+											// conversion
+				ball.setBall_y(ball.getBall_y() + 1);
+
+			// Accelera la pallina
+			if (ball.isAcceleration()) {
+				ball.setBall_acceleration_count(ball
+						.getBall_acceleration_count() + 1);
+				if (ball.getBall_acceleration_count() == Pong.ACCELERATION) {
+					ball.setBall_x_speed(ball.getBall_x_speed()
+							+ (int) ball.getBall_x_speed()
+							/ Math.hypot((int) ball.getBall_x_speed(),
+									(int) ball.getBall_y_speed()) * 2);
+					ball.setBall_y_speed(ball.getBall_y_speed()
+							+ (int) ball.getBall_y_speed()
+							/ Math.hypot((int) ball.getBall_x_speed(),
+									(int) ball.getBall_y_speed()) * 2);
+					ball.setBall_acceleration_count(0);
+				}
 			}
 		}
-
 		checkCollision(screen);
 
 	}
