@@ -15,7 +15,10 @@ public class PongWindow extends JFrame {
 		setTitle ("Pong");
 		setSize (640, 480);
 		
-		Pong content = new Pong (Player.CPU_HARD, Player.CPU_EASY);
+		Player player1 = new Player(Player.CPU_HARD);
+		Player player2 = new Player(Player.KEYBOARD);
+		
+		Pong content = new Pong (player1,player2);
 		content.acceleration = true;
 		getContentPane ().add (content);
 		
@@ -25,7 +28,7 @@ public class PongWindow extends JFrame {
 		Timer timer = new Timer (20, content);
 		timer.start ();
 	}
-	public PongWindow (int player1, int player2) {
+	public PongWindow (Player player1, Player player2) {
 		super ();
 		setTitle ("Pong");
 		setSize (640, 480);

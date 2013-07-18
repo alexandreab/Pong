@@ -9,7 +9,9 @@ import javax.swing.JFrame;
 
 public class Teste2 {
 	public static void main (String[] args) {
-		PongWindow window = new PongWindow (Player.CPU_HARD, Player.KEYBOARD);
+		Player player1 = new Player(Player.MOUSE);
+		Player player2 = new Player(Player.KEYBOARD);
+		PongWindow window = new PongWindow (player1,player2);
 		window.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
 		window.setVisible (true);
 	}

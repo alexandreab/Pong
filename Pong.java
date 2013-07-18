@@ -50,17 +50,16 @@ public class Pong extends JPanel implements ActionListener, MouseListener, KeyLi
 	private boolean key_down = false;
 	
 	// Constructor
-	public Pong (int p1_type, int p2_type) {
+	public Pong (Player p1, Player p2) {
 		super ();
 		setBackground (new Color (0, 0, 0));
 		
-		player1 = new Player (p1_type);
-		player2 = new Player (p2_type);
+		player1 = p1;
+		player2 = p2;
 	}
 	
 	// Compute destination of the ball
 	private void computeDestination (Player player) {
-		int base;
 		if (ball_x_speed > 0)
 			player.destination = ball_y + (getWidth() - PADDING - WIDTH - RADIUS - ball_x) * (int)(ball_y_speed) / (int)(ball_x_speed);
 		else
