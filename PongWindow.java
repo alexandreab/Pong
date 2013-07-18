@@ -16,21 +16,20 @@ public class PongWindow extends JFrame {
 		Player player2 = new Player(Player.KEYBOARD);
 		Ball ball = new Ball(false);
 		Screen screen = new Screen();
-		Receptor receptor = new Receptor(player1, player2, ball);
-		configureObjects(player1, player2, ball, screen, receptor);
+		configureObjects(player1, player2, ball, screen);
 	}
 
-	public PongWindow (Player player1, Player player2, Ball ball, Screen screen, Receptor receptor) {
+	public PongWindow (Player player1, Player player2, Ball ball, Screen screen) {
 		super ();
 		
-		configureObjects(player1, player2, ball, screen, receptor);
+		configureObjects(player1, player2, ball, screen);
 	}
 	
 	
-	private void configureObjects(Player player1, Player player2, Ball ball, Screen screen, Receptor receptor) {
+	private void configureObjects(Player player1, Player player2, Ball ball, Screen screen) {
 		setTitle ("Pong");
 		setSize (640, 480);
-		Pong content = new Pong (player1, player2, ball, screen, receptor);
+		Pong content = new Pong (player1, player2, ball, screen);
 		content.ball.setAcceleration(true);
 		
 		getContentPane().add(screen);

@@ -27,16 +27,16 @@ public class Pong {
 
 	public Ball ball;
 	Screen screen;
-	Receptor receptor;
+
 
 	// Constructor
-	public Pong(Player p1, Player p2, Ball ball, Screen screen, Receptor receptor) {
+	public Pong(Player p1, Player p2, Ball ball, Screen screen) {
 		super();
 
 		player1 = p1;
 		player2 = p2;
 		this.ball = ball;
-		this.receptor = receptor;
+
 
 		this.screen = screen;
 		screen.game = this;
@@ -45,7 +45,7 @@ public class Pong {
 	// Compute destination of the ball
 	void computeDestination(Player player) {
 		if (TYPE == 1) {
-			player.destination = receptor.getPlayerDestination(player);
+			//player.destination = receptor.getPlayerDestination(player);
 		} else {
 			if (ball.getBall_x_speed() > 0)
 				player.destination = ball.getBall_y()

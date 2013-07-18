@@ -5,28 +5,31 @@
  *  Read the file 'COPYING' for more information
  */
 
-import java.io.*;
-import java.net.*;
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 import javax.swing.JFrame;
 
 public class Teste2 {
+	static Player player1 = new Player(Player.MOUSE);
+	static Player player2 = new Player(Player.ENEMY);
 	public static void main(String[] args) throws UnknownHostException,
 			IOException {
 
 		String hostname = "localhost";
 		int port = 6789;
 
-		Player player1 = new Player(Player.ENEMY);
-		Player player2 = new Player(Player.MOUSE);
 		// Player player2 = new Player(Player.KEYBOARD);
 		Ball ball = new Ball(false);
 		Screen screen = new Screen();
-		Receptor receptor = new Receptor(player1, player2, ball);
 
-		PongWindow window = new PongWindow(player1, player2, ball, screen,
-				receptor);
+		PongWindow window = new PongWindow(player1, player2, ball, screen);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setVisible(true);
 
@@ -97,6 +100,107 @@ public class Teste2 {
 				System.err.println("IOException:  " + e);
 			}
 		}
+		else {
+			port = 6789;
+			Teste2 server = new Teste2( port );
+			server.startServer();
+		}
 
 	}
+// declare a server socket and a client socket for the server
+    
+    ServerSocket echoServer = null;
+    Socket clientSocket = null;
+    int port;
+    
+    public Teste2( int port ) {
+	this.port = port;
+    }
+    
+    public void stopServer() {
+	System.out.println( "Server cleaning up." );
+	System.exit(0);
+    }
+    
+    public void startServer() {
+	// Try to open a server socket on the given port
+	// Note that we can't choose a port less than 1024 if we are not
+	// privileged users (root)
+	
+        try {
+	    echoServer = new ServerSocket(port);
+        }
+        catch (IOException e) {
+	    System.out.println(e);
+        }   
+	
+	System.out.println( "Waiting for connections. Only one connection is allowed." );
+	
+	// Create a socket object from the ServerSocket to listen and accept connections.
+	// Use Server1Connection to process the connection.
+	
+	while ( true ) {
+	    try {
+		clientSocket = echoServer.accept();
+		Server1Connection oneconnection = new Server1Connection(clientSocket, this, player1, player2);
+		oneconnection.run();
+	    }   
+	    catch (IOException e) {
+		System.out.println(e);
+	    }
+	}
+    }
+}
+
+class Server1Connection {
+    BufferedReader is;
+    PrintStream os;
+    Socket clientSocket;
+    Teste2 server;
+    Player player1;
+    Player player2;
+    public Server1Connection(Socket clientSocket, Teste2 server, Player player1, Player player2) {
+	this.clientSocket = clientSocket;
+	this.server = server;
+	System.out.println( "Connection established with: " + clientSocket );
+	try {
+	    is = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+	    os = new PrintStream(clientSocket.getOutputStream());
+	} catch (IOException e) {
+	    System.out.println(e);
+	}
+    }
+    
+    public void run() {
+        String line;
+	try {
+	    boolean serverStop = false;
+	    
+            while (true) {
+                line = is.readLine();
+                if (player1.getType() == Player.ENEMY) {
+					player1.toObject(line);
+				} else {
+					player2.toObject(line);
+				}
+		System.out.println( "Received " + line );
+                int n = Integer.parseInt(line);
+		if ( n == -1 ) {
+		    serverStop = true;
+		    break;
+		}
+		if ( n == 0 ) break;
+                os.println("" + n*n ); 
+            }
+	    
+	    System.out.println( "Connection closed." );
+            is.close();
+            os.close();
+            clientSocket.close();
+	    
+	    if ( serverStop ) server.stopServer();
+	} catch (IOException e) {
+	    System.out.println(e);
+	}
+    }
 }
