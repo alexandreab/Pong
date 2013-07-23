@@ -28,7 +28,6 @@ public class Pong {
 	public Ball ball;
 	Screen screen;
 
-
 	// Constructor
 	public Pong(Player p1, Player p2, Ball ball, Screen screen) {
 		super();
@@ -37,7 +36,6 @@ public class Pong {
 		player2 = p2;
 		this.ball = ball;
 
-
 		this.screen = screen;
 		screen.game = this;
 	}
@@ -45,7 +43,7 @@ public class Pong {
 	// Compute destination of the ball
 	void computeDestination(Player player) {
 		if (TYPE == 1) {
-			//player.destination = receptor.getPlayerDestination(player);
+			// player.destination = receptor.getPlayerDestination(player);
 		} else {
 			if (ball.getBall_x_speed() > 0)
 				player.destination = ball.getBall_y()
@@ -103,7 +101,11 @@ public class Pong {
 		// MOUSE
 		else if (player.getType() == Player.MOUSE) {
 			if (screen.mouse_inside) {
-				int cursor = screen.getMousePosition().y;
+
+				int cursor = 0;
+
+				if (screen.mouse_inside)
+					cursor = screen.getMousePosition().y;
 				movePlayer(player, cursor);
 			}
 		}
