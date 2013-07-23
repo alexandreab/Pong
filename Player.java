@@ -51,14 +51,13 @@ public class Player {
 	}
 
 	public void toObject(String values) {
-		if (values.length() == 5) {
 			String[] arrayofValues = values.split(":");
 			type = Integer.parseInt(arrayofValues[0]);
 			position = Integer.parseInt(arrayofValues[1]);
 			destination = Integer.parseInt(arrayofValues[2]);
 			points = Integer.parseInt(arrayofValues[3]);
 			id = Integer.parseInt(arrayofValues[4]);
-		}
+			System.out.println("Minha nova posicao eh: "+position);
 
 	}
 }

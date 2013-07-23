@@ -8,7 +8,7 @@ import java.net.Socket;
 public class Connection implements Runnable {
 	private Player me;
 	private Player enemy;
-	private Ball ball;
+	//private Ball ball;
 	private int port;
 	private String host;
 	private int opt;
@@ -38,7 +38,7 @@ public class Connection implements Runnable {
 							conexao.getOutputStream());
 					linha = me.toString();
 					saida.println(linha);
-					System.out.println("Estou enviando: "+linha);
+					System.out.println("Estou enviando:     "+linha);
 					
 					
 					// System.out.println("Recebi "+ linha);
@@ -84,9 +84,10 @@ public class Connection implements Runnable {
 					break;
 				}
 				enemy.toObject(linha);
+				System.out.println("Cliente diz: Passei pro meu inimigo local.");
 				
 				linha = me.toString();
-				System.out.println("Estou enviando: "+linha);
+				System.out.println("Estou enviando:     "+linha);
 				saida.println(linha);
 			}
 			conexao.close();
