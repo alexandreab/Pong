@@ -31,16 +31,28 @@ public class Connection implements Runnable {
 
 				BufferedReader entrada = new BufferedReader(
 						new InputStreamReader(conexao.getInputStream()));
-				String linha = entrada.readLine();
-				while (linha != null && !(linha.trim().equals(""))) {
-
-					// System.out.println("Recebi "+ linha);
-					enemy.toObject(linha);
-					linha = entrada.readLine();
-
+				String linha;
+				while (true) {
+					
 					PrintStream saida = new PrintStream(
 							conexao.getOutputStream());
-					saida.println(me.toString());
+					linha = me.toString();
+					saida.println(linha);
+					System.out.println("Estou enviando: "+linha);
+					
+					
+					// System.out.println("Recebi "+ linha);
+					
+					linha = entrada.readLine();
+					System.out.println("Estou recebendo: "+ linha);
+					
+					
+					if (linha == null) {
+						System.out.println("Conexão encerrada!");
+						break;
+					}
+					enemy.toObject(linha);
+					
 
 				}
 				conexao.close();
@@ -57,25 +69,27 @@ public class Connection implements Runnable {
 		try {
 			if(host.isEmpty())
 				host = "127.0.0.1";
-			Socket conexao = new Socket(host, 2000);
+			Socket conexao = new Socket(host, port);
 			BufferedReader entrada = new BufferedReader(new InputStreamReader(
 					conexao.getInputStream()));
 			PrintStream saida = new PrintStream(conexao.getOutputStream());
 			String linha;
 			// loop principal
 			while (true) {
-				linha = me.toString();
-				saida.println(linha);
-				
 				
 				linha = entrada.readLine();
-				enemy.toObject(linha);
+				System.out.println("Estou recebendo: "+ linha);
 				if (linha == null) {
 					System.out.println("Conexão encerrada!");
 					break;
 				}
-				conexao.close();
+				enemy.toObject(linha);
+				
+				linha = me.toString();
+				System.out.println("Estou enviando: "+linha);
+				saida.println(linha);
 			}
+			conexao.close();
 		} catch (IOException e) {
 			// caso ocorra alguma excessão de E/S, mostre qual foi.
 			System.out.println("IOException do cliente: " + e);
